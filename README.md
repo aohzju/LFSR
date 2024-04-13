@@ -6,4 +6,4 @@ Two implementations are provided and tested against each other:
 2. Matrix style implementation, suitable for parallel computation.
 
 LFSR reference:
-![LFSR](LFSR.drawio)
+![LFSR](LFSR.png)
