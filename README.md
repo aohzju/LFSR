@@ -1,5 +1,5 @@
 # LFSR
-Generic 32-bit LFSR reference implementation
+Generic 32-bit LFSR (Linear Feedback Shift Register) reference implementation
 
 Two implementations are provided and tested against each other:
 1. Brute-force implementation, see class BruteforceLfsr32.
