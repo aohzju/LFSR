@@ -27,22 +27,27 @@ void MatrixLfsr32::ConstructStateTransMatrix()
 void MatrixLfsr32::CalStateTransMatrixP32()
 {
 	uint32_t tmp[32];
-	memcpy(state_trans_matrix_p32, state_trans_matrix, sizeof(uint32_t) * 32);
+	//memcpy(state_trans_matrix_p32, state_trans_matrix, sizeof(uint32_t) * 32);
+	for (int i = 0; i < 32; i++) {
+		tmp[i] = GetBitMatrixColumn(state_trans_matrix, i); //transpose state_trans_matrix, such that tmp is column-major
+	}
 	for (int i = 0; i < 31; i++) {
-		memcpy(tmp, state_trans_matrix_p32, sizeof(uint32_t) * 32);
 		Gf2MatrixMul(state_trans_matrix, tmp, state_trans_matrix_p32);
+		memcpy(tmp, state_trans_matrix_p32, sizeof(uint32_t) * 32);
+	}
+	for (int i = 0; i < 32; i++) {
+		state_trans_matrix_p32[i] = GetBitMatrixColumn(tmp, i); //back to row-column
 	}
 }
 
+//Matrix multiplication in GF(2) field
+//A: row-major 32x32 bit matrix
+//B: column-major 32x32 bit matrix
+//C: C = A*B, column-major 32x32 matrix
 void MatrixLfsr32::Gf2MatrixMul(const uint32_t A[], const uint32_t B[], uint32_t C[])
 {
-	uint32_t col_vector;
-	memset(C, 0, sizeof(uint32_t) * 32);
-	for (int i = 0; i < 32; i++) { //column i
-		col_vector = GetBitMatrixColumn(B, i);
-		uint32_t m = Gf2MatrixVecMul(A, col_vector);
-		for (int r = 0; r < 32; r++)
-			C[r] |= ((m >> r) & 0x1) << i;
+	for (int i = 0; i < 32; i++) {
+		C[i] = Gf2MatrixVecMul(A, B[i]);
 	}
 }
 
